@@ -219,8 +219,6 @@ class Graph(Store):
                             elif self.id_category:
                                 self.id_category_text=self.user_text
                                 self.input_okay=True
-
-                            
                             self.user_text = ''  # Efface le texte après avoir appuyé sur Entrée
                         elif event.key == pygame.K_BACKSPACE:
                             self.user_text = self.user_text[:-1]  # Supprime le dernier caractère
@@ -229,6 +227,7 @@ class Graph(Store):
             
             if self.input_active:
                 self.draw_button(self.text_rect,(0,0,0),self.user_text,(255,255,255))
+
             if self.input_okay:
                 if self.add:
                     product.addProduct(self.name_text,self.description_text,self.price_text,self.quantity_text,self.id_category_text)
@@ -242,8 +241,7 @@ class Graph(Store):
                     self.input_active=False
 
             self.writeProducts(self.var_product)
-            # product.getProduct(self.var_product)
-                
+    
             pygame.display.flip()  
 
 shop = Store()
