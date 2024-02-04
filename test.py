@@ -87,10 +87,13 @@ listOfId=[var_id]
 listOfId.append(var_id)
 print(id,listOfId[0][id][0])
 
-
+kui=True
+kou=True
 
 readProduct()
 print(countProduct())
+if kui and kou:
+    print("okJSIKJFs")
 # shop=Store()  
 # product=Product()
 # shop.writeProducts(2)
