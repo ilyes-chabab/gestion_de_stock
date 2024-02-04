@@ -2,6 +2,7 @@
 import pygame
 import sys
 import mysql.connector
+import time
 
 class Store:
     def __init__(self) -> None:
@@ -63,15 +64,13 @@ class Product(Store):
         print(product_list)
         for product in product_list:
             print(product)
-            self.cursor.execute("INSERT INTO test (name, description, price, quantity, id_category) VALUES (%s, %s, %s, %s, %s)",product)
+            self.cursor.execute("INSERT INTO product (name, description, price, quantity, id_category) VALUES (%s, %s, %s, %s, %s)",product)
         self.mydb.commit()
         self.mydb.close()
 
-    def removeProduct(self):
+    def removeProduct(self,idToRemove):
         self.readProduct()
-        self.productToRemove= int(input("Vous voulez supprimer le produit numéro : "))
-        self.cursor.execute(f'delete from test where id={self.productToRemove}')
-        self.readProduct()
+        self.cursor.execute(f'delete from test where id={idToRemove}')
         self.mydb.commit()
         self.mydb.close()
 
@@ -84,9 +83,18 @@ class Product(Store):
         self.new_quantity = int(input("Nouvelle quantité : "))
         self.new_category = input("Nouvelle catégorie : ")
         update_data = (self.new_name,self.new_description, self.new_price, self.new_quantity, self.new_category)
-        self.cursor.execute(f"UPDATE test SET name = %s, description = %s, price = %s, quantity = %s, id_category = %s WHERE id = {self.productToUpdate}", update_data)
+        self.cursor.execute(f"UPDATE product SET name = %s, description = %s, price = %s, quantity = %s, id_category = %s WHERE id = {self.productToUpdate}", update_data)
         self.mydb.commit()
         self.mydb.close()
+    
+    def getProduct(self,id):
+        self.cursor.execute(f"select id from product")
+        var_id= self.cursor.fetchall()
+        self.listOfId=[var_id]
+        self.listOfId.append(var_id)
+        print(self.listOfId[0][id][0])
+        return self.listOfId[0][id][0]
+
 
 class Graph(Store):
     def __init__(self) -> None:     
@@ -99,6 +107,7 @@ class Graph(Store):
         print(self.countProduct())
         self.product_nega=False
         self.product_posi=False
+        self.input_active=False
 
     def message(self,size,message,message_rectangle,color):
         font=pygame.font.SysFont("arial",size)
@@ -153,18 +162,31 @@ class Graph(Store):
                             self.var_product -= 1
                     elif button_add_rect.collidepoint(event.pos):
                         product.addProduct()
+                        text_zone=pygame.Rect(120,450,450,60)
                     elif button_remove_rect.collidepoint(event.pos):
-                        product.removeProduct()
+                        product.removeProduct(Product.getProduct(self,self.var_product))
+                        if True:
+                            self.message(60,'Produit supprimé avec succés.',(300,400,0,0,),(0,0,0))
+                            time.sleep(2)
                     elif button_edit_rect.collidepoint(event.pos):
                         product.updateProduct()
             self.writeProducts(self.var_product)
-            
+            Product.getProduct(self,self.var_product)
+            if self.input_active:
+                if event.key == pygame.K_RETURN: # lorsqu'il appuiras sur entrée le texte sera ecrit dans le fichier texte
+                    print(user_text)  
+                    user_text = ''  # Efface le texte après avoir appuyé sur Entrée
+                elif event.key == pygame.K_BACKSPACE:
+                    user_text = user_text[:-1]  # Supprime le dernier caractère
+                else:
+                    user_text += event.unicode  # Ajoute le texte saisi par l'utilisateur
             pygame.display.flip()  
 
 shop = Store()
 product = Product()
 graphique = Graph()
 graphique.loop()
+
 
 
    

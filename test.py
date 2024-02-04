@@ -80,7 +80,12 @@ def updateProduct(self):
     mydb.commit()
     mydb.close()
 
-
+id= 0
+cursor.execute(f"select id from product")
+var_id= cursor.fetchall()
+listOfId=[var_id]
+listOfId.append(var_id)
+print(id,listOfId[0][id][0])
 
 
 
